@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <title>Document</title>
+</head>
+
+<body>
+    <form>
+        <div>
+            <!-- <input type="file" accept="audio/*;capture=microphone"> -->
+        </div>
+        <div>
+            <!-- <audio controls style="width: 100px;">
+                <source type='audio/mp3' src="songs/audio2.mp3">
+            </audio> -->
+            <!-- <audio src="songs/audio2.mp3" controls></audio> -->
+            <!-- <button id='btn' onclick='Record()'>Record</button> -->
+
+            <!-- <audio controls autoplay></audio>
+
+            <input onclick="startRecording()" type="button" value="start recording" />
+            <input onclick="stopRecording()" type="button" value="stop recording and play" /> -->
+
+        </div>
+    </form>
+</body>
+
+</html>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+    crossorigin="anonymous"></script>
+<script>
+
+
+    // var onFail = function (e) {
+    //     console.log('Rejected!', e);
+    // };
+    // var onSuccess = function (s) {
+    //     stream = s;
+    // }
+    //window.URL = window.URL || window.webkitURL;
+    // navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    // var stream;
+    // var audio = document.querySelector('audio');
+    // function startRecording() {
+    //     if (navigator.getUserMedia) {
+    //         navigator.getUserMedia({ audio: true }, onSuccess, onFail);
+    //     } else {
+    //         console.log('navigator.getUserMedia not present');
+    //     }
+    // }
+    // function stopRecording() {
+    //     audio.src = window.URL.createObjectURL(stream);
+    // }
+
+
+    // appends an audio element to playback and download recording
+    function createAudioElement(blobUrl) {
+        const downloadEl = document.createElement('a');
+        downloadEl.style = 'display: block';
+        downloadEl.innerHTML = 'download';
+        downloadEl.download = 'audio.webm';
+        downloadEl.href = blobUrl;
+        const audioEl = document.createElement('audio');
+        audioEl.controls = true;
+        const sourceEl = document.createElement('source');
+        sourceEl.src = blobUrl;
+        sourceEl.type = 'audio/webm';
+        audioEl.appendChild(sourceEl);
+        document.body.appendChild(audioEl);
+        document.body.appendChild(downloadEl);
+        downloadEl.click();
+    }
+    
+
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            // store streaming data chunks in array
+            const chunks = [];
+            // create media recorder instance to initialize recording
+            const recorder = new MediaRecorder(stream);
+            // function to be called when data is received
+            recorder.ondataavailable = e => {
+                // add stream data to chunks
+                chunks.push(e.data);
+                // if recorder is 'inactive' then recording has finished
+                if (recorder.state == 'inactive') {
+                    // convert stream data chunks to a 'webm' audio format as a blob
+                    const blob = new Blob(chunks, { type: 'audio/webm' });
+                    // convert blob to URL so it can be assigned to a audio src attribute
+                    createAudioElement(URL.createObjectURL(blob));
+                }
+            };
+            // start recording with 1 second time between receiving 'ondataavailable' events
+            recorder.start(1000);
+            // setTimeout to stop recording after 4 seconds
+            setTimeout(() => {
+                // this will trigger one final 'ondataavailable' event and set recorder state to 'inactive'
+                recorder.stop();
+            }, 2000);
+        }).catch(console.error);
+
+    function Record() {
+        console.log('test');
+        //debugger;
+        var fileref=document.createElement('script')
+        fileref.setAttribute("type","text/javascript")
+        fileref.setAttribute("src", 'sound.js')
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+
+        // // request permission to access audio stream
+        // navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        //     // store streaming data chunks in array
+        //     const chunks = [];
+        //     // create media recorder instance to initialize recording
+        //     const recorder = new MediaRecorder(stream);
+        //     // function to be called when data is received
+        //     recorder.ondataavailable = e => {
+        //         // add stream data to chunks
+        //         chunks.push(e.data);
+        //         // if recorder is 'inactive' then recording has finished
+        //         if (recorder.state == 'inactive') {
+        //             // convert stream data chunks to a 'webm' audio format as a blob
+        //             const blob = new Blob(chunks, { type: 'audio/webm' });
+        //             // convert blob to URL so it can be assigned to a audio src attribute
+        //             createAudioElement(URL.createObjectURL(blob));
+        //         }
+        //     };
+        //     // start recording with 1 second time between receiving 'ondataavailable' events
+        //     recorder.start(1000);
+        //     // setTimeout to stop recording after 4 seconds
+        //     setTimeout(() => {
+        //         // this will trigger one final 'ondataavailable' event and set recorder state to 'inactive'
+        //         recorder.stop();
+        //     }, 2000);
+        // }).catch(console.error);
+
+    }
+
+
+</script>
